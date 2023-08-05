@@ -863,24 +863,24 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 snackString(getString(R.string.first_episode))
         }
 
-        model.getEpisode().observe(this) {
+        model.getEpisode().observe(this) { ep ->
             hideSystemBars()
-            if (it != null && !epChanging) {
-                episode = it
+            if (ep != null && !epChanging) {
+                episode = ep
                 media.selected = model.loadSelected(media)
                 model.setMedia(media)
-                currentEpisodeIndex = episodeArr.indexOf(it.number)
+                currentEpisodeIndex = episodeArr.indexOf(ep.number)
                 episodeTitle.setSelection(currentEpisodeIndex)
                 if (isInitialized) releasePlayer()
-                playbackPosition = loadData("${media.id}_${it.number}", this) ?: 0
+                playbackPosition = loadData("${media.id}_${ep.number}", this) ?: 0
                 initPlayer()
                 preloading = false
                 rpc = Discord.defaultRPC()
                 rpc?.send {
                     type = RPC.Type.WATCHING
                     activityName = media.userPreferredName
-                    details =  it.title ?: getString(R.string.episode_num, it.number)
-                    state = "Episode : ${it.number}/${media.anime?.totalEpisodes ?: "??"}"
+                    details =  ep.title?.takeIf { it.isNotEmpty() } ?: getString(R.string.episode_num, ep.number)
+                    state = "Episode : ${ep.number}/${media.anime?.totalEpisodes ?: "??"}"
                     media.cover?.let { cover ->
                         largeImage = RPC.Link(media.userPreferredName, cover)
                     }

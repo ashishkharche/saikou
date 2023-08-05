@@ -480,7 +480,7 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
                     binding.settingsDiscordAvatar.loadImage(Discord.avatar)
                 }
                 binding.settingsDiscordUsername.visibility = View.VISIBLE
-                binding.settingsDiscordUsername.text = Discord.userid
+                binding.settingsDiscordUsername.text = Discord.userid ?: Discord.token?.replace(Regex("."),"*")
                 binding.settingsDiscordLogin.setText(R.string.logout)
                 binding.settingsDiscordLogin.setOnClickListener {
                     Discord.removeSavedToken(this)
