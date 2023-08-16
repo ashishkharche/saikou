@@ -114,9 +114,19 @@ class MediaInfoFragment : Fragment() {
                     type = "MANGA"
                     binding.mediaInfoTotalTitle.setText(R.string.total_chaps)
                     binding.mediaInfoTotal.text = (media.manga.totalChapters ?: "~").toString()
-                    media.manga.author?.let {
+                    if (media.manga.author != null) {
                         binding.mediaInfoAuthorContainer.visibility = View.VISIBLE
-                        binding.mediaInfoAuthor.text = it
+                        binding.mediaInfoAuthor.text = media.manga.author!!.name
+                        binding.mediaInfoAuthorContainer.setOnClickListener {
+                            ContextCompat.startActivity(
+                                requireActivity(),
+                                Intent(activity, AuthorActivity::class.java).putExtra(
+                                    "author",
+                                    media.manga.author!! as Serializable
+                                ),
+                                null
+                            )
+                        }
                     }
                 }
 

@@ -71,7 +71,20 @@ class Query{
         )
     }
 
-//    data class MediaList(
+
+    @Serializable
+    data class Author(
+        @SerialName("data")
+        val data: Data?
+    ){
+        @Serializable
+        data class Data(
+            @SerialName("Staff")
+            val author: Staff?
+        )
+    }
+
+    //    data class MediaList(
 //        val data: Data?
 //    ){
 //        data class Data(

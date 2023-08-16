@@ -47,6 +47,7 @@
             android:name=".media.SearchActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".media.StudioActivity" />
+        <activity android:name=".media.AuthorActivity" />
         <activity
             android:name=".media.CalendarActivity"
             android:parentActivityName=".MainActivity" />

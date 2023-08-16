@@ -12,6 +12,7 @@ import ani.saikou.checkId
 import ani.saikou.currContext
 import ani.saikou.loadData
 import ani.saikou.logError
+import ani.saikou.media.Author
 import ani.saikou.media.Character
 import ani.saikou.media.Media
 import ani.saikou.media.Studio
@@ -200,9 +201,14 @@ class AnilistQueries {
                                     "vrv"         -> media.vrvId = i.url?.split("/")?.getOrNull(4)
                                 }
                             }
-                        } else if (media.manga != null) {
-                            val author = fetchedMedia.staff?.edges?.find { authorRoles.contains(it.role) }?.node?.name?.userPreferred
-                            media.manga.author = author
+                        }
+                        else if (media.manga != null) {
+                            fetchedMedia.staff?.edges?.find { authorRoles.contains(it.role?.trim()) }?.node?.let {
+                                media.manga.author = Author(
+                                    it.id.toString(),
+                                    it.name?.userPreferred ?: "N/A"
+                                )
+                            }
                         }
                         media.shareLink = fetchedMedia.siteUrl
                     }
@@ -823,7 +829,6 @@ Page(page:$page,perPage:50) {
                 it.pageInfo?.hasNextPage == true
             } ?: false
         }
-
         if (yearMedia.contains("CANCELLED")) {
             val a = yearMedia["CANCELLED"]!!
             yearMedia.remove("CANCELLED")
@@ -831,6 +836,80 @@ Page(page:$page,perPage:50) {
         }
         studio.yearMedia = yearMedia
         return studio
+    }
+
+
+    suspend fun getAuthorDetails(author: Author): Author {
+        fun query(page: Int = 0) = """ {
+  Staff(id: ${author.id}) {
+    id
+    staffMedia(page: $page,sort:START_DATE_DESC) {
+      pageInfo{
+        hasNextPage
+      }
+      edges {
+        id
+        node {
+          id
+          idMal
+          isAdult
+          status
+          chapters
+          episodes
+          nextAiringEpisode { episode }
+          type
+          meanScore
+          startDate{ year }
+          isFavourite
+          format
+          bannerImage
+          countryOfOrigin
+          coverImage { large }
+          title {
+              english
+              romaji
+              userPreferred
+          }
+          mediaListEntry {
+              progress
+              private
+              score(format: POINT_100)
+              status
+          }
+        }
+      }
+    }
+  }
+}""".replace("\n", " ").replace("""  """, "")
+
+        var hasNextPage = true
+        val yearMedia = mutableMapOf<String, ArrayList<Media>>()
+        var page = 0
+
+        while (hasNextPage) {
+            page++
+            hasNextPage = executeQuery<Query.Author>(query(page), force = true)?.data?.author?.staffMedia?.let {
+                it.edges?.forEach { i ->
+                    i.node?.apply {
+                        val status = status.toString()
+                        val year = startDate?.year?.toString() ?: "TBA"
+                        val title = if (status != "CANCELLED") year else status
+                        if (!yearMedia.containsKey(title))
+                            yearMedia[title] = arrayListOf()
+                        yearMedia[title]?.add(Media(this))
+                    }
+                }
+                it.pageInfo?.hasNextPage == true
+            } ?: false
+        }
+
+        if (yearMedia.contains("CANCELLED")) {
+            val a = yearMedia["CANCELLED"]!!
+            yearMedia.remove("CANCELLED")
+            yearMedia["CANCELLED"] = a
+        }
+        author.yearMedia = yearMedia
+        return author
     }
 
 }
