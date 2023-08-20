@@ -106,6 +106,20 @@ class MediaInfoFragment : Fragment() {
                             )
                         }
                     }
+                    if (media.anime.author != null) {
+                        binding.mediaInfoAuthorContainer.visibility = View.VISIBLE
+                        binding.mediaInfoAuthor.text = media.anime.author!!.name
+                        binding.mediaInfoAuthorContainer.setOnClickListener {
+                            ContextCompat.startActivity(
+                                requireActivity(),
+                                Intent(activity, AuthorActivity::class.java).putExtra(
+                                    "author",
+                                    media.anime.author!! as Serializable
+                                ),
+                                null
+                            )
+                        }
+                    }
                     binding.mediaInfoTotalTitle.setText(R.string.total_eps)
                     binding.mediaInfoTotal.text =
                         if (media.anime.nextAiringEpisode != null) (media.anime.nextAiringEpisode.toString() + " | " + (media.anime.totalEpisodes

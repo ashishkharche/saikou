@@ -192,6 +192,13 @@ class AnilistQueries {
                                 }
                             }
 
+                            fetchedMedia.staff?.edges?.find { authorRoles.contains(it.role?.trim()) }?.node?.let {
+                                media.anime.author = Author(
+                                    it.id.toString(),
+                                    it.name?.userPreferred ?: "N/A"
+                                )
+                            }
+
                             media.anime.nextAiringEpisodeTime = fetchedMedia.nextAiringEpisode?.airingAt?.toLong()
 
                             fetchedMedia.externalLinks?.forEach { i ->
@@ -848,6 +855,7 @@ Page(page:$page,perPage:50) {
         hasNextPage
       }
       edges {
+        staffRole
         id
         node {
           id
@@ -896,7 +904,9 @@ Page(page:$page,perPage:50) {
                         val title = if (status != "CANCELLED") year else status
                         if (!yearMedia.containsKey(title))
                             yearMedia[title] = arrayListOf()
-                        yearMedia[title]?.add(Media(this))
+                        val media = Media(this)
+                        media.relation = i.staffRole
+                        yearMedia[title]?.add(media)
                     }
                 }
                 it.pageInfo?.hasNextPage == true

@@ -1,5 +1,6 @@
 package ani.saikou.media.anime
 
+import ani.saikou.media.Author
 import ani.saikou.media.Studio
 import java.io.Serializable
 
@@ -14,6 +15,7 @@ data class Anime(
     var ed: ArrayList<String> = arrayListOf(),
 
     var mainStudio: Studio? = null,
+    var author: Author?=null,
 
     var youtube: String? = null,
     var nextAiringEpisode: Int? = null,
