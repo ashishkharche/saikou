@@ -69,6 +69,8 @@ data class Media(
     var shareLink: String? = null,
     var selected: Selected? = null,
 
+    var idKitsu: String?=null,
+
     var cameFromContinue: Boolean = false
 ) : Serializable {
 
