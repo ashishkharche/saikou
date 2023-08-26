@@ -1,17 +1,11 @@
 package ani.saikou.parsers.anime
 
-import android.net.Uri
 import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.parsers.AnimeParser
 import ani.saikou.parsers.Episode
 import ani.saikou.parsers.ShowResponse
-import ani.saikou.parsers.VideoExtractor
 import ani.saikou.parsers.VideoServer
-import ani.saikou.parsers.anime.extractors.DoodStream
-import ani.saikou.parsers.anime.extractors.GogoCDN
-import ani.saikou.parsers.anime.extractors.Mp4Upload
-import ani.saikou.parsers.anime.extractors.StreamSB
 
 class Gogo : AnimeParser() {
     override val name = "Gogo"
@@ -47,19 +41,6 @@ class Gogo : AnimeParser() {
 
             VideoServer(name, embed)
         }
-    }
-
-    override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
-        val domain = Uri.parse(server.embed.url).host ?: return null
-        println("domain: $domain")
-        val extractor: VideoExtractor? = when {
-            "taku" in domain -> GogoCDN(server)
-            "sb" in domain   -> StreamSB(server)
-            "dood" in domain -> DoodStream(server)
-            "mp4" in domain  -> Mp4Upload(server)
-            else             -> null
-        }
-        return extractor
     }
 
     override suspend fun search(query: String): List<ShowResponse> {

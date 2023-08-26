@@ -1,7 +1,27 @@
 package ani.saikou.parsers
 
-import ani.saikou.*
+import android.net.Uri
+import android.util.Log
+import ani.saikou.FileUrl
+import ani.saikou.R
+import ani.saikou.asyncMap
+import ani.saikou.currContext
+import ani.saikou.loadData
 import ani.saikou.others.MalSyncBackup
+import ani.saikou.parsers.anime.AniWave
+import ani.saikou.parsers.anime.extractors.ALions
+import ani.saikou.parsers.anime.extractors.AWish
+import ani.saikou.parsers.anime.extractors.DoodStream
+import ani.saikou.parsers.anime.extractors.FileMoon
+import ani.saikou.parsers.anime.extractors.GogoCDN
+import ani.saikou.parsers.anime.extractors.Mp4Upload
+import ani.saikou.parsers.anime.extractors.OkRu
+import ani.saikou.parsers.anime.extractors.RapidCloud
+import ani.saikou.parsers.anime.extractors.StreamSB
+import ani.saikou.parsers.anime.extractors.StreamTape
+import ani.saikou.parsers.anime.extractors.VidStreaming
+import ani.saikou.saveData
+import ani.saikou.tryWithSuspend
 import kotlin.properties.Delegates
 
 /**
@@ -62,7 +82,30 @@ abstract class AnimeParser : BaseParser() {
      * You can use your own way to get the Extractor for reliability.
      * if there's only extractor, you can directly return it.
      * **/
-    abstract suspend fun getVideoExtractor(server: VideoServer): VideoExtractor?
+    open suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
+        var domain = Uri.parse(server.embed.url).host ?: return null
+        if (domain.startsWith("www.")) {domain = domain.substring(4)}
+
+        val extractor: VideoExtractor? = when (domain) {
+            "filemoon.to", "filemoon.sx"  -> FileMoon(server)
+            "rapid-cloud.co"              -> RapidCloud(server)
+            "streamtape.com"              -> StreamTape(server)
+            "vidstream.pro"               -> VidStreaming(server)
+            "mp4upload.com"               -> Mp4Upload(server)
+            "playtaku.net","goone.pro"    -> GogoCDN(server)
+            "alions.pro"                  -> ALions(server)
+            "awish.pro"                   -> AWish(server)
+            "dood.wf"                     -> DoodStream(server)
+            "ok.ru"                       -> OkRu(server)
+            "streamlare.com"              -> null // streamlare.com/e/vJ41zYN1aQblwA3g
+            else                          -> {
+                println("$name : No extractor found for: $domain | ${server.embed.url}")
+                null
+            }
+        }
+
+        return extractor
+    }
 
     /**
      * If the Video Servers support preloading links for the videos
