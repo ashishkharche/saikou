@@ -1,14 +1,12 @@
 package ani.saikou.parsers
 
 import android.net.Uri
-import android.util.Log
 import ani.saikou.FileUrl
 import ani.saikou.R
 import ani.saikou.asyncMap
 import ani.saikou.currContext
 import ani.saikou.loadData
 import ani.saikou.others.MalSyncBackup
-import ani.saikou.parsers.anime.AniWave
 import ani.saikou.parsers.anime.extractors.ALions
 import ani.saikou.parsers.anime.extractors.AWish
 import ani.saikou.parsers.anime.extractors.DoodStream
@@ -17,7 +15,6 @@ import ani.saikou.parsers.anime.extractors.GogoCDN
 import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.OkRu
 import ani.saikou.parsers.anime.extractors.RapidCloud
-import ani.saikou.parsers.anime.extractors.StreamSB
 import ani.saikou.parsers.anime.extractors.StreamTape
 import ani.saikou.parsers.anime.extractors.VidStreaming
 import ani.saikou.saveData
