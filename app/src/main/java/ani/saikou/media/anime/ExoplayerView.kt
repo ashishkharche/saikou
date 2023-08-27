@@ -171,6 +171,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     val model: MediaDetailsViewModel by viewModels()
 
     private var isTimeStampsLoaded = false
+    private var isSeeking = false
+    private var isFastForwarding = false
 
     var rotation = 0
 
@@ -608,7 +610,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                     if (!isRunning) start()
                 }
 
-                if (event != null) {
+                if (!isSeeking && event != null) {
                     playerView.hideController()
                     card.circularReveal(event.x.toInt(), event.y.toInt(), !forward, 800)
                     showCardAnim.start()
@@ -627,9 +629,12 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
             startAnim()
 
+            isSeeking = true
+
             if (forward) {
                 seekTimerR.reset(object : TimerTask() {
                     override fun run() {
+                        isSeeking = false
                         stopAnim()
                         seekTimesF = 0
                     }
@@ -637,6 +642,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             } else {
                 seekTimerF.reset(object : TimerTask() {
                     override fun run() {
+                        isSeeking = false
                         stopAnim()
                         seekTimesR = 0
                     }
@@ -718,8 +724,25 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 volumeHide()
             }
 
+            fun fastForward() {
+                val newSpeed = playbackParameters.speed * 2f
+                exoPlayer.playbackParameters = playbackParameters.withSpeed(newSpeed)
+                isFastForwarding = true
+                snackString("Playing at ${newSpeed}x speed")
+            }
+
+            fun stopFastForward() {
+                if (isFastForwarding) {
+                    exoPlayer.playbackParameters = playbackParameters
+                    isFastForwarding = false
+                    snackString("Playing at normal speed")
+                }
+            }
+
             //FastRewind (Left Panel)
             val fastRewindDetector = GestureDetector(this, object : GesturesListener() {
+                override fun onLongClick(event: MotionEvent) = fastForward()
+
                 override fun onDoubleClick(event: MotionEvent) {
                     doubleTap(false, event)
                 }
@@ -734,18 +757,21 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                     }
                 }
 
-                override fun onSingleClick(event: MotionEvent) = handleController()
+                override fun onSingleClick(event: MotionEvent) = if (isSeeking) doubleTap(false, event) else handleController()
             })
             val rewindArea = playerView.findViewById<View>(R.id.exo_rewind_area)
             rewindArea.isClickable = true
             rewindArea.setOnTouchListener { v, event ->
                 fastRewindDetector.onTouchEvent(event)
+                if (event.action == MotionEvent.ACTION_UP) stopFastForward()
                 v.performClick()
                 true
             }
 
             //FastForward (Right Panel)
             val fastForwardDetector = GestureDetector(this, object : GesturesListener() {
+                override fun onLongClick(event: MotionEvent) = fastForward()
+
                 override fun onDoubleClick(event: MotionEvent) {
                     doubleTap(true, event)
                 }
@@ -760,12 +786,13 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                     }
                 }
 
-                override fun onSingleClick(event: MotionEvent) = handleController()
+                override fun onSingleClick(event: MotionEvent) = if (isSeeking) doubleTap(true, event) else handleController()
             })
             val forwardArea = playerView.findViewById<View>(R.id.exo_forward_area)
             forwardArea.isClickable = true
             forwardArea.setOnTouchListener { v, event ->
                 fastForwardDetector.onTouchEvent(event)
+                if (event.action == MotionEvent.ACTION_UP) stopFastForward()
                 v.performClick()
                 true
             }
@@ -879,7 +906,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 rpc?.send {
                     type = RPC.Type.WATCHING
                     activityName = media.userPreferredName
-                    details =  ep.title?.takeIf { it.isNotEmpty() } ?: getString(R.string.episode_num, ep.number)
+                    details = ep.title?.takeIf { it.isNotEmpty() } ?: getString(R.string.episode_num, ep.number)
                     state = "Episode : ${ep.number}/${media.anime?.totalEpisodes ?: "??"}"
                     media.cover?.let { cover ->
                         largeImage = RPC.Link(media.userPreferredName, cover)
