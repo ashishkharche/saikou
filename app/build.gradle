@@ -88,5 +88,5 @@ dependencies {
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
     implementation 'com.alexvasilkov:gesture-views:2.8.3'
-
+    implementation 'com.github.VipulOG:ebook-reader:0.1.6'
 }

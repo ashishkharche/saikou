@@ -17,6 +17,7 @@ import ani.saikou.media.manga.MangaChapter
 import ani.saikou.settings.CurrentReaderSettings
 import com.alexvasilkov.gestures.views.GestureFrameLayout
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import kotlinx.coroutines.Dispatchers
@@ -91,11 +92,22 @@ abstract class BaseImageAdapter(
                 withContext(Dispatchers.IO) {
                     Glide.with(this@loadBitmap)
                         .asBitmap()
-                        .load(GlideUrl(link.url) { link.headers })
                         .let {
-                            if (transforms.isNotEmpty())
+                            if (link.url.startsWith("file://")) {
+                                it.load(link.url)
+                                    .skipMemoryCache(true)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            } else {
+                                it.load(GlideUrl(link.url) { link.headers })
+                            }
+                        }
+                        .let {
+                            if (transforms.isNotEmpty()) {
                                 it.transform(*transforms.toTypedArray())
-                            else it
+                            }
+                            else {
+                                it
+                            }
                         }
                         .submit()
                         .get()
