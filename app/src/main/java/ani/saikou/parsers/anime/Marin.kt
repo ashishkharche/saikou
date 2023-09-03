@@ -2,7 +2,7 @@ package ani.saikou.parsers.anime
 
 import ani.saikou.*
 import ani.saikou.parsers.*
-import dev.brahmkshatriya.nicehttp.NiceResponse
+import com.lagradost.nicehttp.NiceResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.net.URLDecoder.decode

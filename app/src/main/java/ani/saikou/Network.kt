@@ -5,14 +5,14 @@ import android.os.Build
 import androidx.fragment.app.FragmentActivity
 import ani.saikou.others.webview.CloudFlare
 import ani.saikou.others.webview.WebViewBottomDialog
-import dev.brahmkshatriya.nicehttp.Requests
-import dev.brahmkshatriya.nicehttp.ResponseParser
-import dev.brahmkshatriya.nicehttp.addGenericDns
+import com.lagradost.nicehttp.Requests
+import com.lagradost.nicehttp.ResponseParser
+import com.lagradost.nicehttp.addGenericDns
 import kotlinx.coroutines.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import okhttp3.Cache
@@ -77,11 +77,13 @@ object Mapper : ResponseParser {
     }
 
     override fun <T : Any> parseSafe(text: String, kClass: KClass<T>): T? {
-        return try {
+        return tryWith {
             parse(text, kClass)
-        } catch (e: Exception) {
-            null
         }
+    }
+
+    override fun writeValueAsString(obj: Any): String {
+        return json.encodeToString(obj)
     }
 
     inline fun <reified T> parse(text: String): T {

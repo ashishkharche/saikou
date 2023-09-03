@@ -76,7 +76,7 @@ import ani.saikou.settings.PlayerSettingsActivity
 import ani.saikou.settings.UserInterfaceSettings
 import com.bumptech.glide.Glide
 import com.google.android.material.slider.Slider
-import dev.brahmkshatriya.nicehttp.ignoreAllSSLErrors
+import com.lagradost.nicehttp.ignoreAllSSLErrors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -1566,7 +1566,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         }
     }
 
-    @Suppress("DEPRECATION")
     @Deprecated("Deprecated in Java")
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
         onPiPChanged(isInPictureInPictureMode)
