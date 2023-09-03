@@ -20,7 +20,7 @@ class AnilistMutations {
         repeat: Int? = null,
         notes: String? = null,
         status: String? = null,
-        private:Boolean = false,
+        private:Boolean? = null,
         startedAt: FuzzyDate? = null,
         completedAt: FuzzyDate? = null,
         customList: List<String>? = null
@@ -34,7 +34,8 @@ class AnilistMutations {
             }
         """.replace("\n", "").replace("""    """, "")
 
-        val variables = """{"mediaID":$mediaID,"private":$private
+        val variables = """{"mediaID":$mediaID
+            ${if (private != null) ""","private":$private""" else ""}
             ${if (progress != null) ""","progress":$progress""" else ""}
             ${if (score != null) ""","scoreRaw":$score""" else ""}
             ${if (repeat != null) ""","repeat":$repeat""" else ""}
