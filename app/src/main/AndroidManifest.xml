@@ -34,7 +34,7 @@
         tools:ignore="AllowBackup"
         tools:targetApi="m">
         <activity
-            android:name=".novel.novelreader.NovelReaderActivity"
+            android:name="ani.saikou.media.novel.novelreader.NovelReaderActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true" >
             <intent-filter>

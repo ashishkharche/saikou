@@ -1,4 +1,4 @@
-package ani.saikou.novel
+package ani.saikou.media.novel
 
 import android.annotation.SuppressLint
 import android.view.HapticFeedbackConstants

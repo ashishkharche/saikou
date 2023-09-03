@@ -1,4 +1,4 @@
-package ani.saikou.novel.novelreader
+package ani.saikou.media.novel.novelreader
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint

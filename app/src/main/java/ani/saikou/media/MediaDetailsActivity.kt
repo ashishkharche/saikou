@@ -39,7 +39,7 @@ import ani.saikou.loadData
 import ani.saikou.loadImage
 import ani.saikou.media.manga.MangaReadFragment
 import ani.saikou.navBarHeight
-import ani.saikou.novel.NovelReadFragment
+import ani.saikou.media.novel.NovelReadFragment
 import ani.saikou.openLinkInBrowser
 import ani.saikou.others.ImageViewDialog
 import ani.saikou.others.getSerialized

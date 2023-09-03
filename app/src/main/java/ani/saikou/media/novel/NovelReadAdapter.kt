@@ -1,4 +1,4 @@
-package ani.saikou.novel
+package ani.saikou.media.novel
 
 import android.content.Context
 import android.view.LayoutInflater
