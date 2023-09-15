@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources.getSystem
@@ -247,6 +248,14 @@ class DatePickerFragment(activity: Activity, var date: FuzzyDate = FuzzyDate().g
         val month = if (date.month != null) date.month!! - 1 else c.get(Calendar.MONTH)
         val day = date.day ?: c.get(Calendar.DAY_OF_MONTH)
         dialog = DatePickerDialog(activity, this, year, month, day)
+        dialog.setButton(
+            DialogInterface.BUTTON_NEUTRAL,
+            activity.getString(R.string.remove)
+        ) { dialog, which ->
+            if (which == DialogInterface.BUTTON_NEUTRAL) {
+                date = FuzzyDate()
+            }
+        }
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {

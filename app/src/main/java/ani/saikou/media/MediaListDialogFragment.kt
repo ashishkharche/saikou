@@ -116,8 +116,8 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                         if (b && !end.dialog.isShowing) end.dialog.show()
                     }
                 }
-                start.dialog.setOnDismissListener { _binding?.mediaListStart?.setText(start.date.toString()) }
-                end.dialog.setOnDismissListener { _binding?.mediaListEnd?.setText(end.date.toString()) }
+                start.dialog.setOnDismissListener { _binding?.mediaListStart?.setText((if (start.date.year != null) start.date else "").toString()) }
+                end.dialog.setOnDismissListener { _binding?.mediaListEnd?.setText((if (end.date.year != null) end.date else "").toString()) }
 
 
                 fun onComplete() {
@@ -207,8 +207,8 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                                 val status = statuses[statusStrings.indexOf(_binding?.mediaListStatus?.text.toString())]
                                 val rewatch = _binding?.mediaListRewatch?.text?.toString()?.toIntOrNull()
                                 val notes = _binding?.mediaListNotes?.text?.toString()
-                                val startD = if (start.date.year != null) start.date else null
-                                val endD = if (end.date.year != null) end.date else null
+                                val startD = start.date
+                                val endD = end.date
                                 Anilist.mutation.editList(
                                     media!!.id,
                                     progress,
