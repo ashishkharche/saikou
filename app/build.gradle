@@ -8,7 +8,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+def gitCommitHash = providers.exec {
+    commandLine("git", "rev-parse", "--verify", "--short", "HEAD")
+}.standardOutput.asText.get().trim()
 
 android {
     compileSdk 34
