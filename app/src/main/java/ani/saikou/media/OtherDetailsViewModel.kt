@@ -3,7 +3,7 @@ package ani.saikou.media
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import java.text.DateFormat
 import java.util.*
 
@@ -19,7 +19,11 @@ class OtherDetailsViewModel : ViewModel() {
     suspend fun loadStudio(m: Studio) {
         if (studio.value == null) studio.postValue(Anilist.query.getStudioDetails(m))
     }
-
+    private val author: MutableLiveData<Author> = MutableLiveData(null)
+    fun getAuthor(): LiveData<Author> = author
+    suspend fun loadAuthor(m: Author) {
+        if (author.value == null) author.postValue(Anilist.query.getAuthorDetails(m))
+    }
     private val calendar: MutableLiveData<Map<String,MutableList<Media>>> = MutableLiveData(null)
     fun getCalendar(): LiveData<Map<String,MutableList<Media>>> = calendar
     suspend fun loadCalendar() {

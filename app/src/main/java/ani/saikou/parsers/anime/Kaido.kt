@@ -1,13 +1,9 @@
 package ani.saikou.parsers.anime
 
-import android.net.Uri
 import ani.saikou.FileUrl
 import ani.saikou.asyncMap
 import ani.saikou.client
 import ani.saikou.parsers.*
-import ani.saikou.parsers.anime.extractors.RapidCloud
-import ani.saikou.parsers.anime.extractors.StreamSB
-import ani.saikou.parsers.anime.extractors.StreamTape
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
@@ -49,18 +45,6 @@ class Kaido : AnimeParser() {
                 .link
             VideoServer(serverName, FileUrl(link, embedHeaders))
         }
-    }
-
-    override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
-        val domain = Uri.parse(server.embed.url).host ?: return null
-        val extractor: VideoExtractor? = when {
-            "megacloud" in domain -> RapidCloud(server)
-            "rapid" in domain     -> RapidCloud(server)
-            "sb" in domain        -> StreamSB(server)
-            "streamta" in domain  -> StreamTape(server)
-            else -> null
-        }
-        return extractor
     }
 
     override suspend fun search(query: String): List<ShowResponse> {

@@ -12,10 +12,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.api.FuzzyDate
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.anilist.api.FuzzyDate
 import ani.saikou.databinding.BottomSheetMediaListBinding
-import ani.saikou.mal.MAL
+import ani.saikou.connections.mal.MAL
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,7 +94,7 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
 
                 val start = DatePickerFragment(requireActivity(), media!!.userStartedAt)
                 val end = DatePickerFragment(requireActivity(), media!!.userCompletedAt)
-                binding.mediaListStart.setText((if (media!!.userStartedAt.year != null) media!!.userStartedAt else "").toString())
+                binding.mediaListStart.setText(media!!.userStartedAt.toStringOrEmpty())
                 binding.mediaListStart.setOnClickListener {
                     tryWith(false) {
                         if (!start.dialog.isShowing) start.dialog.show()
@@ -105,7 +105,7 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                         if (b && !start.dialog.isShowing) start.dialog.show()
                     }
                 }
-                binding.mediaListEnd.setText((if (media!!.userCompletedAt.year != null) media!!.userCompletedAt else "").toString())
+                binding.mediaListEnd.setText(media!!.userCompletedAt.toStringOrEmpty())
                 binding.mediaListEnd.setOnClickListener {
                     tryWith(false) {
                         if (!end.dialog.isShowing) end.dialog.show()
@@ -116,8 +116,8 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                         if (b && !end.dialog.isShowing) end.dialog.show()
                     }
                 }
-                start.dialog.setOnDismissListener { _binding?.mediaListStart?.setText(start.date.toString()) }
-                end.dialog.setOnDismissListener { _binding?.mediaListEnd?.setText(end.date.toString()) }
+                start.dialog.setOnDismissListener { _binding?.mediaListStart?.setText(start.date.toStringOrEmpty()) }
+                end.dialog.setOnDismissListener { _binding?.mediaListEnd?.setText(end.date.toStringOrEmpty()) }
 
 
                 fun onComplete() {
@@ -207,8 +207,8 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                                 val status = statuses[statusStrings.indexOf(_binding?.mediaListStatus?.text.toString())]
                                 val rewatch = _binding?.mediaListRewatch?.text?.toString()?.toIntOrNull()
                                 val notes = _binding?.mediaListNotes?.text?.toString()
-                                val startD = if (start.date.year != null) start.date else null
-                                val endD = if (end.date.year != null) end.date else null
+                                val startD = start.date
+                                val endD = end.date
                                 Anilist.mutation.editList(
                                     media!!.id,
                                     progress,

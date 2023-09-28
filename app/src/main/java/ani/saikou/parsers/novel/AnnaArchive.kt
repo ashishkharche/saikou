@@ -33,7 +33,7 @@ class AnnaArchive : NovelParser() {
     override suspend fun search(query: String): List<ShowResponse> {
         val q = query.substringAfter("!$").replace("-", " ") // (minus) - does not display records containing the words after
         val vols = client.get("$hostUrl/search?ext=epub&q=$q")
-            .document.select(".main > div > div")
+            .document.getElementsByAttributeValueContaining("class", "h-[125]")
             .mapNotNull { div ->
                 val a = div.selectFirst("a") ?: Jsoup.parse(div.data())
                 parseShowResponse(a.selectFirst("a"))

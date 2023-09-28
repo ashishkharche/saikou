@@ -2,12 +2,8 @@ package ani.saikou.parsers.anime
 
 import android.net.Uri
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.parsers.*
-import ani.saikou.parsers.anime.extractors.DoodStream
-import ani.saikou.parsers.anime.extractors.GogoCDN
-import ani.saikou.parsers.anime.extractors.Mp4Upload
-import ani.saikou.parsers.anime.extractors.StreamSB
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.text.DecimalFormat
@@ -79,37 +75,23 @@ class AllAnime : AnimeParser() {
             } ?: emptyList()
     }
 
-    private fun String.hexDecode(): String {
-        return substringAfterLast('#')
+    private fun String.hexDecode(): ByteArray {
+        return substringAfterLast('-')
             .chunked(2)
             .map { it.toInt(16).toByte() }
             .toByteArray()
-            .toString(Charsets.UTF_8)
     }
 
     private fun String.decodeHash(): String {
-        var str = hexDecode()
-        str = str.map {
-            (it.code xor 48).toChar()
+        return hexDecode().map {
+            (it.toInt() xor 56).toChar()
         }.joinToString("")
-        return str
     }
 
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
-        if (server.extraData?.get("type") == "player")
-            return AllAnimeExtractor(server, true)
-        val serverUrl = Uri.parse(server.embed.url)
-        val domain = serverUrl.host ?: return null
-        val path = serverUrl.path ?: return null
-        val extractor: VideoExtractor? = when {
-            "apivtwo" in path   -> AllAnimeExtractor(server)
-            "taku" in domain    -> GogoCDN(server)
-            "sb" in domain      -> StreamSB(server)
-            "dood" in domain    -> DoodStream(server)
-            "mp4" in domain     -> Mp4Upload(server)
-            else                -> null
-        }
-        return extractor
+        if (server.extraData?.get("type") == "player") return AllAnimeExtractor(server, true)
+        if ("apivtwo" in (Uri.parse(server.embed.url).path ?: return null)) return AllAnimeExtractor(server)
+        return super.getVideoExtractor(server)
     }
 
     override suspend fun search(query: String): List<ShowResponse> {

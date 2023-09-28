@@ -22,8 +22,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.GenresViewModel
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.anilist.GenresViewModel
 import ani.saikou.databinding.*
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
@@ -106,6 +106,20 @@ class MediaInfoFragment : Fragment() {
                             )
                         }
                     }
+                    if (media.anime.author != null) {
+                        binding.mediaInfoAuthorContainer.visibility = View.VISIBLE
+                        binding.mediaInfoAuthor.text = media.anime.author!!.name
+                        binding.mediaInfoAuthorContainer.setOnClickListener {
+                            ContextCompat.startActivity(
+                                requireActivity(),
+                                Intent(activity, AuthorActivity::class.java).putExtra(
+                                    "author",
+                                    media.anime.author!! as Serializable
+                                ),
+                                null
+                            )
+                        }
+                    }
                     binding.mediaInfoTotalTitle.setText(R.string.total_eps)
                     binding.mediaInfoTotal.text =
                         if (media.anime.nextAiringEpisode != null) (media.anime.nextAiringEpisode.toString() + " | " + (media.anime.totalEpisodes
@@ -114,9 +128,19 @@ class MediaInfoFragment : Fragment() {
                     type = "MANGA"
                     binding.mediaInfoTotalTitle.setText(R.string.total_chaps)
                     binding.mediaInfoTotal.text = (media.manga.totalChapters ?: "~").toString()
-                    media.manga.author?.let {
+                    if (media.manga.author != null) {
                         binding.mediaInfoAuthorContainer.visibility = View.VISIBLE
-                        binding.mediaInfoAuthor.text = it
+                        binding.mediaInfoAuthor.text = media.manga.author!!.name
+                        binding.mediaInfoAuthorContainer.setOnClickListener {
+                            ContextCompat.startActivity(
+                                requireActivity(),
+                                Intent(activity, AuthorActivity::class.java).putExtra(
+                                    "author",
+                                    media.manga.author!! as Serializable
+                                ),
+                                null
+                            )
+                        }
                     }
                 }
 

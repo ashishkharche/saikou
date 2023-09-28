@@ -18,10 +18,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.discord.Discord
+import ani.saikou.connections.mal.MAL
 import ani.saikou.databinding.ActivitySettingsBinding
-import ani.saikou.discord.Discord
-import ani.saikou.mal.MAL
 import ani.saikou.others.AppUpdater
 import ani.saikou.others.CustomBottomDialog
 import ani.saikou.parsers.AnimeSources
@@ -480,7 +480,7 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
                     binding.settingsDiscordAvatar.loadImage(Discord.avatar)
                 }
                 binding.settingsDiscordUsername.visibility = View.VISIBLE
-                binding.settingsDiscordUsername.text = Discord.userid
+                binding.settingsDiscordUsername.text = Discord.userid ?: Discord.token?.replace(Regex("."),"*")
                 binding.settingsDiscordLogin.setText(R.string.logout)
                 binding.settingsDiscordLogin.setOnClickListener {
                     Discord.removeSavedToken(this)
@@ -492,7 +492,7 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
                 binding.settingsDiscordUsername.visibility = View.GONE
                 binding.settingsDiscordLogin.setText(R.string.login)
                 binding.settingsDiscordLogin.setOnClickListener {
-                    Discord.loginIntent(this)
+                    Discord.warning(this).show(supportFragmentManager, "dialog")
                 }
             }
         }

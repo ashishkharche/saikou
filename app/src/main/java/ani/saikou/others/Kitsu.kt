@@ -1,10 +1,10 @@
 package ani.saikou.others
 
 import ani.saikou.FileUrl
-import ani.saikou.anime.Episode
 import ani.saikou.client
 import ani.saikou.logger
 import ani.saikou.media.Media
+import ani.saikou.media.anime.Episode
 import ani.saikou.tryWithSuspend
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -53,6 +53,7 @@ query {
 
         val result = getKitsuData(query) ?: return null
         logger("Kitsu : result=$result", print)
+        media.idKitsu = result.data?.lookupMapping?.id
         return (result.data?.lookupMapping?.episodes?.nodes?:return null).mapNotNull { ep ->
             val num = ep?.num?.toString()?:return@mapNotNull null
             num to Episode(

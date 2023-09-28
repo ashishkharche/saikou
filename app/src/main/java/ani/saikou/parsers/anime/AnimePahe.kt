@@ -30,7 +30,7 @@ class AnimePahe : AnimeParser() {
             val url = "$hostUrl/api?m=release&id=$releaseId&sort=episode_asc&page=$i"
             client.get(url).parsed<ReleaseRouteResponse>().data!!.map { ep ->
                 val kwikEpLink = "$hostUrl/play/${releaseId}/${ep.session}"
-                Episode(ep.episode.toString().substringBefore(".0"), kwikEpLink, ep.title, ep.snapshot)
+                Episode(ep.episode.toString().substringBefore(".0"), kwikEpLink, null, ep.snapshot)
             }
         }.flatten()
     }
@@ -157,7 +157,6 @@ class AnimePahe : AnimeParser() {
         data class ReleaseResponse(
             @SerialName("episode") val episode: Float,
             @SerialName("anime_id") val anime_id: Int,
-            @SerialName("title") val title: String,
             @SerialName("snapshot") val snapshot: String,
             @SerialName("session") val session: String,
         )

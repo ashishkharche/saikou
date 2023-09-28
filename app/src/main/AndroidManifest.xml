@@ -33,6 +33,30 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup"
         tools:targetApi="m">
+        <activity
+            android:name="ani.saikou.media.novel.novelreader.NovelReaderActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="application/epub+zip" />
+                <data android:mimeType="application/x-mobipocket-ebook" />
+                <data android:mimeType="application/vnd.amazon.ebook" />
+                <data android:mimeType="application/fb2+zip" />
+                <data android:mimeType="application/vnd.comicbook+zip" />
+
+                <data android:pathPattern=".*\\.epub" />
+                <data android:pathPattern=".*\\.mobi" />
+                <data android:pathPattern=".*\\.kf8" />
+                <data android:pathPattern=".*\\.fb2" />
+                <data android:pathPattern=".*\\.cbz" />
+
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+            </intent-filter>
+        </activity>
         <activity android:name=".settings.FAQActivity" />
         <activity android:name=".settings.ReaderSettingsActivity" />
         <activity android:name=".settings.UserInterfaceSettingsActivity" />
@@ -47,25 +71,26 @@
             android:name=".media.SearchActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".media.StudioActivity" />
+        <activity android:name=".media.AuthorActivity" />
         <activity
             android:name=".media.CalendarActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".user.ListActivity" />
+        <activity android:name="ani.saikou.media.user.ListActivity" />
         <activity
-            android:name=".manga.mangareader.MangaReaderActivity"
+            android:name="ani.saikou.media.manga.mangareader.MangaReaderActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/manga"
             android:launchMode="singleTask" />
-        <activity android:name=".GenreActivity" />
+        <activity android:name=".media.GenreActivity" />
         <activity
             android:name=".media.MediaDetailsActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Saikou.NeverCutout" />
         <activity android:name=".media.CharacterDetailsActivity" />
-        <activity android:name=".NoInternet" />
+        <activity android:name=".home.NoInternet" />
         <activity
-            android:name=".anime.ExoplayerView"
+            android:name="ani.saikou.media.anime.ExoplayerView"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -74,7 +99,7 @@
             android:supportsPictureInPicture="true"
             tools:targetApi="n" />
         <activity
-            android:name=".anilist.Login"
+            android:name="ani.saikou.connections.anilist.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -91,7 +116,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".mal.Login"
+            android:name="ani.saikou.connections.mal.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -108,7 +133,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".discord.Login"
+        <activity android:name="ani.saikou.connections.discord.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -127,7 +152,7 @@
         </activity>
 
         <activity
-            android:name=".anilist.UrlMedia"
+            android:name="ani.saikou.connections.anilist.UrlMedia"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"

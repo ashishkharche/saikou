@@ -333,6 +333,7 @@
                             android:layout_marginBottom="-4dp"
                             android:fontFamily="@font/poppins_bold"
                             android:gravity="center"
+                            android:maxLines="1"
                             android:text="@string/username"
                             android:textSize="16sp" />
 
